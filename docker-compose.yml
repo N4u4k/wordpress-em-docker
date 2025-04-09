@@ -1,0 +1,40 @@
+services:
+  db: 
+    image: mariadb:latest
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: "#usuario do banco de dados"
+      MYSQL_DATABASE: "wordpressdb"
+      MYSQL_USER: "wordpress"
+      MYSQL_PASSWORD: "#senha para o banco de dados"
+
+  phpmyadmin:
+    depends_on:  
+      - db
+    image: phpmyadmin/phpmyadmin 
+    restart: always
+    ports:
+      - 8088:80
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: "#usuario do banco de dados"
+
+  wordpress:
+    depends_on:  
+      - db
+    image: wordpress:latest
+    restart: always
+    ports:
+      - 8000:80
+    environment: 
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: "#senha do banco de dados wordpress"
+      WORDPRESS_DB_NAME: wordpressdb
+
+volumes:
+  db_data:
+
+
